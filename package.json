@@ -3,10 +3,9 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-               "dev": "react-router dev",
-               "build": "react-router build", // <--- ADD THIS LINE
-               "typecheck": "react-router typegen && tsc --noEmit"
-},
+		"dev": "react-router dev",
+		"typecheck": "react-router typegen && tsc --noEmit"
+	},
 	"dependencies": {
 		"@auth/core": "^0.37.2",
 		"@babel/generator": "^7.27.1",
