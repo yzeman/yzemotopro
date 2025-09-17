@@ -2,8 +2,6 @@ import sql from "@/app/api/utils/sql";
 
 // GET - List vehicles with search and filtering
 export async function GET(request) {
-  console.log("GET request received for vehicles API");
-  console.log("URL:", request.url);
   try {
     const { searchParams } = new URL(request.url);
     const search = searchParams.get("search") || "";
@@ -209,4 +207,4 @@ export async function POST(request) {
       { status: 500 },
     );
   }
-}
+          }
