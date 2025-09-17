@@ -8,7 +8,7 @@ export default [
   
   // API routes (if needed)
   route('api/auth/*', './api/auth/route.ts'),
-  route('api/vehicles/*', './api/vehicles/route.ts'),
+  route('api/vehicles/*', './api/vehicles/route.js'),
   route('api/utils/*', './api/utils/route.ts'),
   
   // Catch-all route
