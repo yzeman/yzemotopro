@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { reactRouter } from '@react-router/dev/vite';
-import { reactRouterHonoServer } from 'react-router-hono-server/dev';
+import { vercelPreset } from '@vercel/react-router/vite'; // ← Add this import
 import { defineConfig } from 'vite';
 import babel from 'vite-plugin-babel';
 import tsconfigPaths from 'vite-tsconfig-paths';
@@ -35,11 +35,6 @@ export default defineConfig({
   plugins: [
     nextPublicProcessEnv(),
     restartEnvFileChange(),
-    // Uncomment and fix if you need reactRouterHonoServer:
-    // reactRouterHonoServer({
-    //   serverEntryPoint: './__create/index.ts',
-    //   runtime: 'node',
-    // }),
     babel({
       include: ['src/**/*.{js,jsx,ts,tsx}'], // or RegExp: /src\/.*\.[tj]sx?$/
       exclude: /node_modules/, // skip everything else
@@ -62,6 +57,7 @@ export default defineConfig({
     consoleToParent(),
     loadFontsFromTailwindSource(),
     addRenderIds(),
+    vercelPreset(), // ← Add this line (place it before reactRouter())
     reactRouter(),
     tsconfigPaths(),
     aliases(),
