@@ -1,4 +1,4 @@
-⁰⁰0⁰⁰00import path from 'node:path';
+import path from 'node:path';
 import { reactRouter } from '@react-router/dev/vite';
 import { reactRouterHonoServer } from 'react-router-hono-server/dev';
 import { defineConfig } from 'vite';
