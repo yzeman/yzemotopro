@@ -1,4 +1,4 @@
-import path from 'node:path';
+⁰⁰0⁰⁰00import path from 'node:path';
 import { reactRouter } from '@react-router/dev/vite';
 import { reactRouterHonoServer } from 'react-router-hono-server/dev';
 import { defineConfig } from 'vite';
@@ -35,9 +35,9 @@ export default defineConfig({
   plugins: [
     nextPublicProcessEnv(),
     restartEnvFileChange(),
-    reactRouterHonoServer({
-      serverEntryPoint: './__create/index.ts',
-      runtime: 'node',
+    //reactRouterHonoServer({//
+      //serverEntryPoint: './__create/index.ts',
+     // runtime: 'node',//
     }),
     babel({
       include: ['src/**/*.{js,jsx,ts,tsx}'], // or RegExp: /src\/.*\.[tj]sx?$/
