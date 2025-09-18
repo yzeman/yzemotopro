@@ -1,13 +1,10 @@
 import sql from "@/app/api/utils/sql";
 
 // GET - List vehicles with search and filtering
-export async function POST(request) {
-  console.log("POST request received for vehicles API");
+export async function GET(request) {
+  console.log("GET request received for vehicles API");
   
   try {
-    // First get the body and log it
-    const body = await request.json();
-    console.log("Request body:", JSON.stringify(body));
     const { searchParams } = new URL(request.url);
     const search = searchParams.get("search") || "";
     const type = searchParams.get("type") || "";
@@ -144,8 +141,13 @@ export async function POST(request) {
 
 // POST - Create new vehicle
 export async function POST(request) {
+  console.log("POST request received for vehicles API");
+  
   try {
+    // First get the body and log it
     const body = await request.json();
+    console.log("Request body:", JSON.stringify(body));
+
     const {
       title,
       vehicle_type,
@@ -212,4 +214,4 @@ export async function POST(request) {
       { status: 500 },
     );
   }
-          }
+        }
