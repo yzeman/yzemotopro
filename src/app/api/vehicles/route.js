@@ -214,4 +214,59 @@ export async function POST(request) {
       { status: 500 },
     );
   }
-        }
+}
+
+// PUT - Update vehicle
+export async function PUT(request, { params }) {
+  try {
+    const { id } = params;
+    const updates = await request.json();
+    
+    const result = await sql`
+      UPDATE vehicles 
+      SET ${sql(updates, ...Object.keys(updates))}
+      WHERE id = ${id}
+      RETURNING *
+    `;
+    
+    if (result.length === 0) {
+      return Response.json({ error: "Vehicle not found" }, { status: 404 });
+    }
+    
+    return Response.json(result[0]);
+  } catch (error) {
+    console.error("Error updating vehicle:", error);
+    return Response.json(
+      { error: "Failed to update vehicle" },
+      { status: 500 }
+    );
+  }
+}
+
+// DELETE - Delete vehicle
+export async function DELETE(request, { params }) {
+  try {
+    const { id } = params;
+    
+    const result = await sql`
+      DELETE FROM vehicles 
+      WHERE id = ${id}
+      RETURNING *
+    `;
+    
+    if (result.length === 0) {
+      return Response.json({ error: "Vehicle not found" }, { status: 404 });
+    }
+    
+    return Response.json({ message: "Vehicle deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting vehicle:", error);
+    return Response.json(
+      { error: "Failed to delete vehicle" },
+      { status: 500 }
+    );
+  }
+}
+
+// Export all HTTP methods
+export { GET, POST, PUT, DELETE };
