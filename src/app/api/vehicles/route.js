@@ -1,4 +1,4 @@
-src/app/api/vehicles/route.js this whats there before import sql from "@/app/api/utils/sql";
+import sql from "@/app/api/utils/sql";
 
 // GET - List vehicles with search and filtering
 export async function GET(request) {
