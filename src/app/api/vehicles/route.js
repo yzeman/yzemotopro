@@ -1,57 +1,15 @@
 import sql from "@/app/api/utils/sql";
 
-// GET - List vehicles with search and filtering
+// GET - Simple vehicle list
 export async function GET(request) {
-  console.log("GET request received for vehicles API");
-  
   try {
-    const { searchParams } = new URL(request.url);
-    const search = searchParams.get("search") || "";
-    const type = searchParams.get("type") || "";
-    const state = searchParams.get("state") || "";
-    const limit = parseInt(searchParams.get("limit") || "12");
-
-    // Use parameterized query with sql template literal
-    let whereClause = `WHERE is_sold = false`;
-    const queryParams = [];
-
-    if (search) {
-      whereClause += ` AND (LOWER(title) LIKE LOWER($1) OR LOWER(make) LIKE LOWER($1) OR LOWER(model) LIKE LOWER($1))`;
-      queryParams.push(`%${search}%`);
-    }
-
-    if (type) {
-      const paramIndex = queryParams.length + 1;
-      whereClause += ` AND vehicle_type = $${paramIndex}`;
-      queryParams.push(type);
-    }
-
-    if (state) {
-      const paramIndex = queryParams.length + 1;
-      whereClause += ` AND LOWER(state) = LOWER($${paramIndex})`;
-      queryParams.push(state);
-    }
-
-    const query = `SELECT * FROM vehicles ${whereClause} ORDER BY is_featured DESC, created_at DESC LIMIT $${queryParams.length + 1}`;
-    queryParams.push(limit);
-
-    const vehicles = await sql(query, queryParams);
-
-    return Response.json({
-      vehicles,
-      pagination: {
-        page: 1,
-        limit,
-        total: vehicles.length,
-        totalPages: Math.ceil(vehicles.length / limit),
-      },
-    });
+    const vehicles = await sql`SELECT * FROM vehicles WHERE is_sold = false ORDER BY created_at DESC LIMIT 100`;
+    return Response.json({ vehicles });
   } catch (error) {
     console.error("Error fetching vehicles:", error);
     return Response.json({ error: "Failed to fetch vehicles" }, { status: 500 });
   }
 }
-
 // POST - Create new vehicle
 export async function POST(request) {
   console.log("POST request received for vehicles API");
@@ -130,4 +88,4 @@ export async function POST(request) {
 }
 
 // Export all HTTP methods
-export { GET, POST };
+export { POST };
