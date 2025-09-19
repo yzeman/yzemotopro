@@ -26,8 +26,7 @@ export async function GET(request) {
     // Add search filter
     if (search) {
       paramCount++;
-      query += ` AND (
-        LOWER(title) LIKE LOWER($${paramCount})
+      query += ` AND LOWER(title) LIKE LOWER($${paramCount})`
         OR LOWER(make) LIKE LOWER($${paramCount})
         OR LOWER(model) LIKE LOWER($${paramCount})
         OR LOWER(description) LIKE LOWER($${paramCount})
