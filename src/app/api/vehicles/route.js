@@ -58,6 +58,20 @@ export async function GET(request) {
 
     const vehicles = await sql(query, values);
 
+    // Check if no vehicles found
+    if (!vehicles || vehicles.length === 0) {
+      return Response.json({ 
+        vehicles: [], 
+        message: "No vehicles found",
+        pagination: {
+          page,
+          limit,
+          total: 0,
+          totalPages: 0,
+        },
+      });
+    }
+
     // Get total count
     const countQuery = `SELECT COUNT(*) as total FROM vehicles ${whereClause}`;
     const countResult = await sql(countQuery, values.slice(0, -2)); // Remove limit/offset params
@@ -81,7 +95,7 @@ export async function GET(request) {
   }
 }
 
-// POST - Create new vehicle (this part is correct)
+// POST - Create new vehicle
 export async function POST(request) {
   try {
     const body = await request.json();
