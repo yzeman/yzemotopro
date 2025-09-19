@@ -95,10 +95,14 @@ export async function GET(request) {
   }
 }
 
-// POST - Create new vehicle
+// POST - Create new vehicle with debug logging
 export async function POST(request) {
+  console.log("🚗 POST /api/vehicles called");
+  
   try {
     const body = await request.json();
+    console.log("📦 Request body:", JSON.stringify(body, null, 2));
+
     const {
       title,
       vehicle_type,
@@ -122,16 +126,11 @@ export async function POST(request) {
       is_featured = false,
     } = body;
 
+    console.log("🔍 Validating fields...");
+
     // Validate required fields
-    if (
-      !title ||
-      !vehicle_type ||
-      !make ||
-      !model ||
-      !year ||
-      !price ||
-      !state
-    ) {
+    if (!title || !vehicle_type || !make || !model || !year || !price || !state) {
+      console.log("❌ Missing required fields");
       return Response.json(
         { error: "Missing required fields" },
         { status: 400 },
@@ -141,8 +140,11 @@ export async function POST(request) {
     // Validate vehicle type
     const validTypes = ["truck", "car", "van", "jeep", "pickup"];
     if (!validTypes.includes(vehicle_type)) {
+      console.log("❌ Invalid vehicle type:", vehicle_type);
       return Response.json({ error: "Invalid vehicle type" }, { status: 400 });
     }
+
+    console.log("✅ Validation passed, inserting into database...");
 
     const result = await sql`
       INSERT INTO vehicles (
@@ -157,11 +159,13 @@ export async function POST(request) {
       ) RETURNING *
     `;
 
+    console.log("✅ Vehicle created successfully:", result[0]);
     return Response.json(result[0], { status: 201 });
+    
   } catch (error) {
-    console.error("Error creating vehicle:", error);
+    console.error("❌ Error creating vehicle:", error);
     return Response.json(
-      { error: "Failed to create vehicle" },
+      { error: "Failed to create vehicle: " + error.message },
       { status: 500 },
     );
   }
