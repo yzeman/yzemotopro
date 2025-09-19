@@ -10,12 +10,12 @@ export async function GET(request) {
     return Response.json({ error: "Failed to fetch vehicles" }, { status: 500 });
   }
 }
+
 // POST - Create new vehicle
 export async function POST(request) {
   console.log("POST request received for vehicles API");
   
   try {
-    // First get the body and log it
     const body = await request.json();
     console.log("Request body:", JSON.stringify(body));
 
@@ -43,19 +43,8 @@ export async function POST(request) {
     } = body;
 
     // Validate required fields
-    if (
-      !title ||
-      !vehicle_type ||
-      !make ||
-      !model ||
-      !year ||
-      !price ||
-      !state
-    ) {
-      return Response.json(
-        { error: "Missing required fields" },
-        { status: 400 },
-      );
+    if (!title || !vehicle_type || !make || !model || !year || !price || !state) {
+      return Response.json({ error: "Missing required fields" }, { status: 400 });
     }
 
     // Validate vehicle type
@@ -80,12 +69,9 @@ export async function POST(request) {
     return Response.json(result[0], { status: 201 });
   } catch (error) {
     console.error("Error creating vehicle:", error);
-    return Response.json(
-      { error: "Failed to create vehicle" },
-      { status: 500 },
-    );
+    return Response.json({ error: "Failed to create vehicle" }, { status: 500 });
   }
 }
 
 // Export all HTTP methods
-export { POST };
+export { GET, POST };
