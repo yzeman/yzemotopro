@@ -9,132 +9,46 @@ export async function GET(request) {
     const search = searchParams.get("search") || "";
     const type = searchParams.get("type") || "";
     const state = searchParams.get("state") || "";
-    const minPrice = searchParams.get("minPrice") || "";
-    const maxPrice = searchParams.get("maxPrice") || "";
-    const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "12");
-    const offset = (page - 1) * limit;
 
-    // Build dynamic query
-    let query = `
-      SELECT * FROM vehicles 
-      WHERE is_sold = false
-    `;
-    const values = [];
-    let paramCount = 0;
-
-    // Add search filter
-    if (search) {
-      paramCount++;
-      query += ` AND LOWER(title) LIKE LOWER($${paramCount})`
-        OR LOWER(make) LIKE LOWER($${paramCount})
-        OR LOWER(model) LIKE LOWER($${paramCount})
-        OR LOWER(description) LIKE LOWER($${paramCount})
-      )`;
-      values.push(`%${search}%`);
-    }
-
-    // Add type filter
-    if (type) {
-      paramCount++;
-      query += ` AND vehicle_type = $${paramCount}`;
-      values.push(type);
-    }
-
-    // Add state filter
-    if (state) {
-      paramCount++;
-      query += ` AND LOWER(state) = LOWER($${paramCount})`;
-      values.push(state);
-    }
-
-    // Add price filters
-    if (minPrice) {
-      paramCount++;
-      query += ` AND price >= $${paramCount}`;
-      values.push(parseFloat(minPrice));
-    }
-
-    if (maxPrice) {
-      paramCount++;
-      query += ` AND price <= $${paramCount}`;
-      values.push(parseFloat(maxPrice));
-    }
-
-    // Add ordering and pagination
-    query += ` ORDER BY is_featured DESC, created_at DESC`;
-
-    paramCount++;
-    query += ` LIMIT $${paramCount}`;
-    values.push(limit);
-
-    paramCount++;
-    query += ` OFFSET $${paramCount}`;
-    values.push(offset);
-
-    const vehicles = await sql(query, values);
-
-    // Get total count for pagination
-    let countQuery = `
-      SELECT COUNT(*) as total FROM vehicles 
-      WHERE is_sold = false
-    `;
-    const countValues = [];
-    let countParamCount = 0;
+    // Use parameterized query with sql template literal
+    let whereClause = `WHERE is_sold = false`;
+    const queryParams = [];
 
     if (search) {
-      countParamCount++;
-      countQuery += ` AND (
-        LOWER(title) LIKE LOWER($${countParamCount})
-        OR LOWER(make) LIKE LOWER($${countParamCount})
-        OR LOWER(model) LIKE LOWER($${countParamCount})
-        OR LOWER(description) LIKE LOWER($${countParamCount})
-      )`;
-      countValues.push(`%${search}%`);
+      whereClause += ` AND (LOWER(title) LIKE LOWER($1) OR LOWER(make) LIKE LOWER($1) OR LOWER(model) LIKE LOWER($1))`;
+      queryParams.push(`%${search}%`);
     }
 
     if (type) {
-      countParamCount++;
-      countQuery += ` AND vehicle_type = $${countParamCount}`;
-      countValues.push(type);
+      const paramIndex = queryParams.length + 1;
+      whereClause += ` AND vehicle_type = $${paramIndex}`;
+      queryParams.push(type);
     }
 
     if (state) {
-      countParamCount++;
-      countQuery += ` AND LOWER(state) = LOWER($${countParamCount})`;
-      countValues.push(state);
+      const paramIndex = queryParams.length + 1;
+      whereClause += ` AND LOWER(state) = LOWER($${paramIndex})`;
+      queryParams.push(state);
     }
 
-    if (minPrice) {
-      countParamCount++;
-      countQuery += ` AND price >= $${countParamCount}`;
-      countValues.push(parseFloat(minPrice));
-    }
+    const query = `SELECT * FROM vehicles ${whereClause} ORDER BY is_featured DESC, created_at DESC LIMIT $${queryParams.length + 1}`;
+    queryParams.push(limit);
 
-    if (maxPrice) {
-      countParamCount++;
-      countQuery += ` AND price <= $${countParamCount}`;
-      countValues.push(parseFloat(maxPrice));
-    }
-
-    const countResult = await sql(countQuery, countValues);
-    const total = parseInt(countResult[0].total);
+    const vehicles = await sql(query, queryParams);
 
     return Response.json({
       vehicles,
       pagination: {
-        page,
+        page: 1,
         limit,
-        total,
-        totalPages: Math.ceil(total / limit),
+        total: vehicles.length,
+        totalPages: Math.ceil(vehicles.length / limit),
       },
     });
   } catch (error) {
     console.error("Error fetching vehicles:", error);
-    return Response.json(
-      { error: "Failed to fetch vehicles" },
-      { status: 500 },
-    );
+    return Response.json({ error: "Failed to fetch vehicles" }, { status: 500 });
   }
 }
 
