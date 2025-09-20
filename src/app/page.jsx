@@ -40,7 +40,7 @@ export default function HomePage() {
       if (priceRange.max) params.append("maxPrice", priceRange.max);
       params.append("page", currentPage.toString());
 
-      const response = await fetch(`/api/vehicles?${params}`);
+      const response = await fetch(`https://yzemotorpro.netlify.app/.netlify/functions/vehicles?${params}`);
       if (!response.ok) {
         throw new Error("Failed to fetch vehicles");
       }
