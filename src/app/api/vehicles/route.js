@@ -99,6 +99,21 @@ export async function GET(request) {
 export async function POST(request) {
   console.log("🚗 POST /api/vehicles called");
   
+  // Add CORS headers - crucial for Vercel
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': 'https://yzemotorpro-theta.vercel.app',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  };
+
+  // Handle OPTIONS request for CORS preflight
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { 
+      status: 200, 
+      headers: corsHeaders 
+    });
+  }
+
   try {
     const body = await request.json();
     console.log("📦 Request body:", JSON.stringify(body, null, 2));
@@ -131,17 +146,30 @@ export async function POST(request) {
     // Validate required fields
     if (!title || !vehicle_type || !make || !model || !year || !price || !state) {
       console.log("❌ Missing required fields");
-      return Response.json(
+      const errorResponse = Response.json(
         { error: "Missing required fields" },
         { status: 400 },
       );
+      // Add CORS headers to error response
+      for (const [key, value] of Object.entries(corsHeaders)) {
+        errorResponse.headers.set(key, value);
+      }
+      return errorResponse;
     }
 
     // Validate vehicle type
     const validTypes = ["truck", "car", "van", "jeep", "pickup"];
     if (!validTypes.includes(vehicle_type)) {
       console.log("❌ Invalid vehicle type:", vehicle_type);
-      return Response.json({ error: "Invalid vehicle type" }, { status: 400 });
+      const errorResponse = Response.json(
+        { error: "Invalid vehicle type" }, 
+        { status: 400 }
+      );
+      // Add CORS headers to error response
+      for (const [key, value] of Object.entries(corsHeaders)) {
+        errorResponse.headers.set(key, value);
+      }
+      return errorResponse;
     }
 
     console.log("✅ Validation passed, inserting into database...");
@@ -160,16 +188,40 @@ export async function POST(request) {
     `;
 
     console.log("✅ Vehicle created successfully:", result[0]);
-    return Response.json(result[0], { status: 201 });
+    
+    // Create success response with CORS headers
+    const response = Response.json(result[0], { status: 201 });
+    for (const [key, value] of Object.entries(corsHeaders)) {
+      response.headers.set(key, value);
+    }
+    return response;
     
   } catch (error) {
     console.error("❌ Error creating vehicle:", error);
-    return Response.json(
+    
+    // Create error response with CORS headers
+    const errorResponse = Response.json(
       { error: "Failed to create vehicle: " + error.message },
       { status: 500 },
     );
+    for (const [key, value] of Object.entries(corsHeaders)) {
+      errorResponse.headers.set(key, value);
+    }
+    return errorResponse;
   }
 }
-
+// OPTIONS - Handle CORS preflight requests
+export async function OPTIONS() {
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': 'https://yzemotorpro-theta.vercel.app',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  };
+  
+  return new Response(null, { 
+    status: 200, 
+    headers: corsHeaders 
+  });
+}
 // Export all HTTP methods
-export { GET, POST };
+export { GET, POST, OPTIONS };
