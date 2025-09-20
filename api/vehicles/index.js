@@ -1,6 +1,6 @@
-// api/vehicles/index.js - MUST be this exact path
-module.exports = async (req, res) => {
-  console.log("🎯 VEHICLES API HIT:", req.method);
+// api/vehicles/index.js - CORRECTED
+export default async function handler(req, res) {
+  console.log("🎯 VEHICLES API HIT:", req.method, new Date().toISOString());
   
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', 'https://yzemotorpro-theta.vercel.app');
@@ -19,6 +19,12 @@ module.exports = async (req, res) => {
     try {
       console.log("Request body:", req.body);
       
+      // Simple validation
+      const { title, make, model, year, price, state } = req.body;
+      if (!title || !make || !model || !year || !price || !state) {
+        return res.status(400).json({ error: "Missing required fields" });
+      }
+      
       return res.status(201).json({ 
         success: true,
         message: "VEHICLE CREATED SUCCESSFULLY!",
@@ -34,4 +40,4 @@ module.exports = async (req, res) => {
   // Method not allowed
   console.log("❌ Method not allowed:", req.method);
   return res.status(405).json({ error: "Method not allowed" });
-};
+}
