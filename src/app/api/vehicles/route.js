@@ -203,5 +203,3 @@ export async function OPTIONS() {
   });
 }
 
-// Export all HTTP methods
-export { GET, POST, OPTIONS };
