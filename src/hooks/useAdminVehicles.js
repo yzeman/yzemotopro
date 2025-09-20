@@ -1,5 +1,26 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
+// Helper function to handle API responses
+async function handleApiResponse(response) {
+  const contentType = response.headers.get("content-type");
+  
+  if (!response.ok) {
+    // Handle HTML errors (like 485 status)
+    if (contentType?.includes("text/html")) {
+      const errorText = await response.text();
+      throw new Error(`Server error (${response.status}): Please check the API route`);
+    }
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  
+  // Ensure response is JSON before parsing
+  if (!contentType?.includes("application/json")) {
+    throw new Error("Server returned non-JSON response");
+  }
+  
+  return response.json();
+}
+
 export function useAdminVehicles(searchParams = {}) {
   const queryClient = useQueryClient();
 
@@ -17,10 +38,7 @@ export function useAdminVehicles(searchParams = {}) {
       }
 
       const response = await fetch(`/api/vehicles?${params}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch vehicles");
-      }
-      return response.json();
+      return handleApiResponse(response);
     },
   });
 
@@ -31,10 +49,7 @@ export function useAdminVehicles(searchParams = {}) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(vehicleData),
       });
-      if (!response.ok) {
-        throw new Error("Failed to create vehicle");
-      }
-      return response.json();
+      return handleApiResponse(response);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-vehicles"] });
@@ -49,10 +64,7 @@ export function useAdminVehicles(searchParams = {}) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!response.ok) {
-        throw new Error("Failed to update vehicle");
-      }
-      return response.json();
+      return handleApiResponse(response);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-vehicles"] });
@@ -65,10 +77,7 @@ export function useAdminVehicles(searchParams = {}) {
       const response = await fetch(`/api/vehicles/${id}`, {
         method: "DELETE",
       });
-      if (!response.ok) {
-        throw new Error("Failed to delete vehicle");
-      }
-      return response.json();
+      return handleApiResponse(response);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-vehicles"] });
@@ -91,4 +100,4 @@ export function useAdminVehicles(searchParams = {}) {
     deleteVehicle,
     toggleFeatured,
   };
-}
+          }
