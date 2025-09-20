@@ -1,5 +1,29 @@
 import sql from "@/app/api/utils/sql";
 
+// CORS headers configuration (add this at the top)
+const corsHeaders = {
+  'Access-Control-Allow-Origin': 'https://yzemotorpro-theta.vercel.app',
+  'Access-Control-Allow-Methods': 'GET, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Access-Control-Allow-Credentials': 'true'
+};
+
+// Helper function (add this)
+function jsonWithCors(data, options = {}) {
+  const response = Response.json(data, options);
+  for (const [key, value] of Object.entries(corsHeaders)) {
+    response.headers.set(key, value);
+  }
+  return response;
+}
+
+// OPTIONS handler (add this)
+export async function OPTIONS() {
+  return new Response(null, { 
+    status: 200, 
+    headers: corsHeaders 
+  });
+}
 // GET - Get single vehicle by ID
 export async function GET(request, { params }) {
   try {
