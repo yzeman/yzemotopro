@@ -117,11 +117,11 @@ export async function GET(request) {
 
 // POST - Create new vehicle with debug logging
 export async function POST(request) {
-  console.log("ðŸš— POST /api/vehicles called");
+  console.log("🚗 POST /api/vehicles called");
   
   try {
     const body = await request.json();
-    console.log("ðŸ“¦ Request body:", JSON.stringify(body, null, 2));
+    console.log("📦 Request body:", JSON.stringify(body, null, 2));
 
     const {
       title,
@@ -146,11 +146,11 @@ export async function POST(request) {
       is_featured = false,
     } = body;
 
-    console.log("ðŸ” Validating fields...");
+    console.log("🔍 Validating fields...");
 
     // Validate required fields
     if (!title || !vehicle_type || !make || !model || !year || !price || !state) {
-      console.log("âŒ Missing required fields");
+      console.log("❌ Missing required fields");
       return jsonWithCors(
         { error: "Missing required fields" },
         { status: 400 },
@@ -160,14 +160,14 @@ export async function POST(request) {
     // Validate vehicle type
     const validTypes = ["truck", "car", "van", "jeep", "pickup"];
     if (!validTypes.includes(vehicle_type)) {
-      console.log("âŒ Invalid vehicle type:", vehicle_type);
+      console.log("❌ Invalid vehicle type:", vehicle_type);
       return jsonWithCors(
         { error: "Invalid vehicle type" }, 
         { status: 400 }
       );
     }
 
-    console.log("âœ… Validation passed, inserting into database...");
+    console.log("✅ Validation passed, inserting into database...");
 
     const result = await sql`
       INSERT INTO vehicles (
@@ -182,12 +182,12 @@ export async function POST(request) {
       ) RETURNING *
     `;
 
-    console.log("âœ… Vehicle created successfully:", result[0]);
+    console.log("✅ Vehicle created successfully:", result[0]);
     
     return jsonWithCors(result[0], { status: 201 });
     
   } catch (error) {
-    console.error("âŒ Error creating vehicle:", error);
+    console.error("❌ Error creating vehicle:", error);
     return jsonWithCors(
       { error: "Failed to create vehicle: " + error.message },
       { status: 500 },
@@ -201,7 +201,4 @@ export async function OPTIONS() {
     status: 200, 
     headers: corsHeaders 
   });
-}
-// Method not allowed
-  return res.status(405).end();
-}
+        }
