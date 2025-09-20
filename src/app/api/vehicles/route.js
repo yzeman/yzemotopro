@@ -1,5 +1,5 @@
 // src/app/api/vehicles/route.js
-import { sql } from '@/app/api/utils/sql'; // Adjust this import if needed
+import sql from '@/app/api/utils/sql'; // ← CORRECT (default import)
 
 // This handles POST requests to /api/vehicles
 export async function action({ request }) {
