@@ -34,7 +34,7 @@ export default function VehicleDetailPage({ params }) {
   } = useQuery({
     queryKey: ["vehicle", id],
     queryFn: async () => {
-      const response = await fetch(`/api/vehicles/${id}`);
+      const response = await fetch(`https://yzemotorpro.netlify.app/.netlify/functions/vehicles/${id}`);
       if (!response.ok) {
         throw new Error("Failed to fetch vehicle");
       }
