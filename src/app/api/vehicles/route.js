@@ -202,4 +202,6 @@ export async function OPTIONS() {
     headers: corsHeaders 
   });
 }
-
+// Method not allowed
+  return res.status(405).end();
+}
