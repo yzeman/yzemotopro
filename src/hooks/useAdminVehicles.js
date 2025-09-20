@@ -1,11 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
+const NETLIFY_API = 'https://yzemotorpro.netlify.app/.netlify/functions';
+
 // Helper function to handle API responses
 async function handleApiResponse(response) {
   const contentType = response.headers.get("content-type");
   
   if (!response.ok) {
-    // Handle HTML errors (like 485 status)
     if (contentType?.includes("text/html")) {
       const errorText = await response.text();
       throw new Error(`Server error (${response.status}): Please check the API route`);
@@ -13,7 +14,6 @@ async function handleApiResponse(response) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
   
-  // Ensure response is JSON before parsing
   if (!contentType?.includes("application/json")) {
     throw new Error("Server returned non-JSON response");
   }
@@ -37,14 +37,16 @@ export function useAdminVehicles(searchParams = {}) {
         params.append("type", searchParams.type);
       }
 
-      const response = await fetch(`/api/vehicles?${params}`);
+      // CHANGE THIS LINE:
+      const response = await fetch(`${NETLIFY_API}/vehicles?${params}`);
       return handleApiResponse(response);
     },
   });
 
   const createVehicle = useMutation({
     mutationFn: async (vehicleData) => {
-      const response = await fetch("/api/vehicles", {
+      // CHANGE THIS LINE:
+      const response = await fetch(`${NETLIFY_API}/vehicles`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(vehicleData),
@@ -59,7 +61,8 @@ export function useAdminVehicles(searchParams = {}) {
 
   const updateVehicle = useMutation({
     mutationFn: async ({ id, data }) => {
-      const response = await fetch(`/api/vehicles/${id}`, {
+      // CHANGE THIS LINE:
+      const response = await fetch(`${NETLIFY_API}/vehicles/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -74,7 +77,8 @@ export function useAdminVehicles(searchParams = {}) {
 
   const deleteVehicle = useMutation({
     mutationFn: async (id) => {
-      const response = await fetch(`/api/vehicles/${id}`, {
+      // CHANGE THIS LINE:
+      const response = await fetch(`${NETLIFY_API}/vehicles/${id}`, {
         method: "DELETE",
       });
       return handleApiResponse(response);
@@ -100,4 +104,4 @@ export function useAdminVehicles(searchParams = {}) {
     deleteVehicle,
     toggleFeatured,
   };
-          }
+}
