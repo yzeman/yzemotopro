@@ -8,6 +8,7 @@
     "typecheck": "react-router typegen && tsc --noEmit"
 },
 	"dependencies": {
+		"pg": "^8.13.0",
 		"@auth/core": "^0.37.2",
 		"@babel/generator": "^7.27.1",
 		"@chakra-ui/react": "2.8.2",
