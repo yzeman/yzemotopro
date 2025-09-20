@@ -1,6 +1,5 @@
 import path from 'node:path';
 import { reactRouter } from '@react-router/dev/vite';
-import { vercelPreset } from '@vercel/react-router/vite'; // ← Add this import
 import { defineConfig } from 'vite';
 import babel from 'vite-plugin-babel';
 import tsconfigPaths from 'vite-tsconfig-paths';
@@ -57,8 +56,7 @@ export default defineConfig({
     consoleToParent(),
     loadFontsFromTailwindSource(),
     addRenderIds(),
-    vercelPreset(), // ← Add this line (place it before reactRouter())
-    reactRouter(),
+    reactRouter(), // ← Keep reactRouter() but REMOVE vercelPreset()
     tsconfigPaths(),
     aliases(),
     layoutWrapperPlugin(),
