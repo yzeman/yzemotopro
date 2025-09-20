@@ -55,3 +55,4 @@ export async function loader({ request }) {
     }
   });
                 }
+export { POST, OPTIONS };
