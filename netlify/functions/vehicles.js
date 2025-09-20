@@ -11,7 +11,7 @@ exports.handler = async (event, context) => {
   // CORS headers
   const headers = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type'
   };
 
@@ -20,7 +20,67 @@ exports.handler = async (event, context) => {
     return { statusCode: 200, headers, body: '' };
   }
 
-  // Handle POST
+  // Handle GET - Get all vehicles
+  if (event.httpMethod === 'GET' && event.path === '/.netlify/functions/vehicles') {
+    try {
+      const result = await pool.query('SELECT * FROM vehicles ORDER BY created_at DESC');
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({
+          success: true,
+          data: result.rows
+        })
+      };
+    } catch (error) {
+      console.error('Database error:', error);
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ 
+          error: "Internal server error",
+          message: error.message 
+        })
+      };
+    }
+  }
+
+  // Handle GET - Get single vehicle by ID
+  if (event.httpMethod === 'GET' && event.path.includes('/vehicles/')) {
+    try {
+      const id = event.path.split('/').pop();
+      const result = await pool.query('SELECT * FROM vehicles WHERE id = $1', [id]);
+      
+      if (result.rows.length === 0) {
+        return { 
+          statusCode: 404, 
+          headers,
+          body: JSON.stringify({ error: "Vehicle not found" }) 
+        };
+      }
+      
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({
+          success: true,
+          data: result.rows[0]
+        })
+      };
+    } catch (error) {
+      console.error('Database error:', error);
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ 
+          error: "Internal server error",
+          message: error.message 
+        })
+      };
+    }
+  }
+
+  // Handle POST - Create new vehicle
   if (event.httpMethod === 'POST') {
     try {
       const vehicle = JSON.parse(event.body);
@@ -55,5 +115,10 @@ exports.handler = async (event, context) => {
     }
   }
 
-  return { statusCode: 405, headers, body: 'Method not allowed' };
+  // Method not allowed
+  return { 
+    statusCode: 405, 
+    headers,
+    body: JSON.stringify({ error: 'Method not allowed' }) 
+  };
 };
