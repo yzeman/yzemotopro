@@ -1,4 +1,11 @@
 // netlify/functions/vehicles.js
+const { Pool } = require('pg');
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+});
+
 exports.handler = async (event, context) => {
   // CORS headers
   const headers = {
@@ -15,22 +22,34 @@ exports.handler = async (event, context) => {
   // Handle POST
   if (event.httpMethod === 'POST') {
     try {
-      const body = JSON.parse(event.body);
+      const vehicle = JSON.parse(event.body);
+      
+      // Insert into database
+      const result = await pool.query(
+        `INSERT INTO vehicles (title, vehicle_type, make, model, year, price, state) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+        [vehicle.title, vehicle.vehicle_type, vehicle.make, vehicle.model, 
+         vehicle.year, vehicle.price, vehicle.state]
+      );
       
       return {
         statusCode: 201,
         headers,
         body: JSON.stringify({
           success: true,
-          message: "Vehicle created on Netlify!",
-          data: body
+          message: "Vehicle created successfully!",
+          data: result.rows[0]
         })
       };
     } catch (error) {
+      console.error('Database error:', error);
       return {
         statusCode: 500,
         headers,
-        body: JSON.stringify({ error: "Internal error" })
+        body: JSON.stringify({ 
+          error: "Internal server error",
+          message: error.message 
+        })
       };
     }
   }
