@@ -1,17 +1,18 @@
 [build]
-  publish = "build/client"  # Changed from dist/client to build/client
+  publish = "build/client"
   command = "npm run build"
 
-# Remove or fix the problematic redirect
+# Critical: This handles client-side routing
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
-# For SSR functions
+# For SSR functions (if using)
 [functions]
   directory = "netlify/functions"
 
+# Cache assets for better performance  
 [[headers]]
   for = "/assets/*"
   [headers.values]
