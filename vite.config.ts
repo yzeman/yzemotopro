@@ -32,13 +32,17 @@ export default defineConfig({
   },
   logLevel: 'info',
   plugins: [
+    // React Router plugin MUST be first
+    reactRouter(),
+    
+    // Then your custom plugins
     nextPublicProcessEnv(),
     restartEnvFileChange(),
     babel({
-      include: ['src/**/*.{js,jsx,ts,tsx}'], // or RegExp: /src\/.*\.[tj]sx?$/
-      exclude: /node_modules/, // skip everything else
+      include: ['src/**/*.{js,jsx,ts,tsx}'],
+      exclude: /node_modules/,
       babelConfig: {
-        babelrc: false, // don't merge other Babel files
+        babelrc: false,
         configFile: false,
         plugins: ['styled-jsx/babel'],
       },
@@ -56,7 +60,6 @@ export default defineConfig({
     consoleToParent(),
     loadFontsFromTailwindSource(),
     addRenderIds(),
-    reactRouter(), // ← Keep reactRouter() but REMOVE vercelPreset()
     tsconfigPaths(),
     aliases(),
     layoutWrapperPlugin(),
@@ -74,7 +77,15 @@ export default defineConfig({
   },
   clearScreen: false,
   build: {
-    target: 'es2022'
+    target: 'es2022',
+    // SPA-specific build settings
+    outDir: 'dist',
+    emptyOutDir: true,
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+      },
+    },
   },
   server: {
     allowedHosts: true,
@@ -84,7 +95,11 @@ export default defineConfig({
       overlay: false,
     },
     warmup: {
-      clientFiles: ['./src/app/**/*', './src/app/root.tsx', './src/app/routes.ts'],
+      clientFiles: [
+        './src/app/root.tsx',
+        './src/app/entry.client.tsx',
+        './src/app/routes/**/*',
+      ],
     },
   },
 });
