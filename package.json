@@ -3,7 +3,7 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-    "dev": "react-router dev",
+    "dev": "react-router dev --config react-router.config.ts"
     "build": "react-router build --config react-router.config.ts",
     "typecheck": "react-router typegen && tsc --noEmit"
 },
