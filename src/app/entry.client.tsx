@@ -1,12 +1,12 @@
-import { RemixBrowser } from 'react-router'; // ← Change this
 import { startTransition, StrictMode } from 'react';
 import { hydrateRoot } from 'react-dom/client';
+import { Router } from 'react-router'; // ← Use Router instead of RemixBrowser
 
 startTransition(() => {
   hydrateRoot(
     document,
     <StrictMode>
-      <RemixBrowser />
+      <Router /> {/* ← Use Router here */}
     </StrictMode>
   );
 });
