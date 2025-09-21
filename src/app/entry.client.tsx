@@ -1,12 +1,16 @@
-import { startTransition, StrictMode } from 'react';
-import { hydrateRoot } from 'react-dom/client';
-import { Router } from 'react-router'; // ← Use Router instead of RemixBrowser
+// src/app/entry.server.tsx
+import { renderToString } from 'react-dom/server';
+import { ServerRouter } from 'react-router';
+import App from './root';
 
-startTransition(() => {
-  hydrateRoot(
-    document,
-    <StrictMode>
-      <Router /> {/* ← Use Router here */}
-    </StrictMode>
+export default function handleRequest() {
+  const html = renderToString(
+    <ServerRouter>
+      <App />
+    </ServerRouter>
   );
-});
+  
+  return new Response(html, {
+    headers: { 'Content-Type': 'text/html' },
+  });
+}
