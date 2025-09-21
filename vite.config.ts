@@ -1,5 +1,5 @@
 import path from 'node:path';
-import reactRouter from '@react-router/dev/vite';
+import { reactRouter } from '@react-router/dev';
 import { defineConfig } from 'vite';
 import babel from 'vite-plugin-babel';
 import tsconfigPaths from 'vite-tsconfig-paths';
