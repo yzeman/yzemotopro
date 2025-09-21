@@ -1,9 +1,24 @@
+import { type RouteConfig } from '@react-router/dev/routes';
+
 export default [
-  index('./page.jsx'),
-  route('admin', './admin/page.jsx'),
-  route('vehicles/:id', './vehicles/[id]/page.jsx'),
-  route('api/auth/*', './api/auth/route.ts'),
-  // REMOVE THIS LINE ↓ (old Vercel API route)
-  // route('api/vehicles', './api/vehicles/route.js'),
-  route('*', './__create/not-found.tsx'),
-];
+  {
+    path: '/',
+    component: './routes/_index.tsx',
+  },
+  {
+    path: 'admin',
+    component: './admin/page.jsx',
+  },
+  {
+    path: 'vehicles/:id',
+    component: './vehicles/[id]/page.jsx',
+  },
+  {
+    path: 'api/auth/*',
+    component: './api/auth/route.ts',
+  },
+  {
+    path: '*',
+    component: './__create/not-found.tsx',
+  }
+] satisfies RouteConfig;
