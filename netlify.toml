@@ -2,17 +2,23 @@
   publish = "build/client"
   command = "npm run build"
 
-# Critical: This handles client-side routing
+# For SSR - this is CRITICAL for React Router v7 SSR
 [[redirects]]
   from = "/*"
-  to = "/index.html"
+  to = "/.netlify/functions/ssr"
   status = 200
 
-# For SSR functions (if using)
+# For API functions
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
 [functions]
   directory = "netlify/functions"
+  node_bundler = "esbuild"
 
-# Cache assets for better performance  
+# Cache assets
 [[headers]]
   for = "/assets/*"
   [headers.values]
