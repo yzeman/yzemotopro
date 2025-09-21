@@ -1,6 +1,7 @@
 import path from 'node:path';
-import { reactRouter } from '@react-router/dev';
-import { defineConfig } from 'vite';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { reactRouter } from "@react-router/dev/vite";
 import babel from 'vite-plugin-babel';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { addRenderIds } from './plugins/addRenderIds';
@@ -33,6 +34,7 @@ export default defineConfig({
   logLevel: 'info',
   plugins: [
     // React Router plugin MUST be first
+    react(),
     reactRouter(),
     
     // Then your custom plugins
