@@ -1,8 +1,12 @@
 [build]
-  publish = "build"
-  functions = "netlify/functions"
+  publish = "dist/client"
+  command = "npm run build"
 
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
+  from = "/*"
+  to = "/index.html"
   status = 200
+
+# For SSR functions (if using React Router v7 SSR)
+[functions]
+  directory = "netlify/functions"
