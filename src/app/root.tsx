@@ -4,7 +4,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-} from 'react-router'; // ← Change this
+} from 'react-router'; // ← This part is correct!
 
 export default function App() {
   return (
