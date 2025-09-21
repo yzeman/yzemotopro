@@ -81,11 +81,7 @@ export default defineConfig({
     // SPA-specific build settings
     outDir: 'dist',
     emptyOutDir: true,
-    rollupOptions: {
-      input: {
-        main: path.resolve(__dirname, 'index.html'),
-      },
-    },
+    // REMOVED: rollupOptions - React Router handles entry points automatically
   },
   server: {
     allowedHosts: true,
