@@ -1,17 +1,18 @@
 [build]
-  publish = "dist/client"
+  publish = "build/client"  # Changed from dist/client to build/client
   command = "npm run build"
 
+# Remove or fix the problematic redirect
 [[redirects]]
-  from = "/.netlify/functions/*"
-  to = "/.netlify/functions/:splat"
+  from = "/*"
+  to = "/index.html"
   status = 200
+
+# For SSR functions
+[functions]
+  directory = "netlify/functions"
 
 [[headers]]
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
-
-# For SSR functions (if using React Router v7 SSR)
-[functions]
-  directory = "netlify/functions"
