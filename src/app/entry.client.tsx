@@ -1,16 +1,13 @@
-// src/app/entry.server.tsx
-import { renderToString } from 'react-dom/server';
-import { ServerRouter } from 'react-router';
+import { StrictMode } from 'react';
+import { hydrateRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 import App from './root';
 
-export default function handleRequest() {
-  const html = renderToString(
-    <ServerRouter>
+hydrateRoot(
+  document,
+  <StrictMode>
+    <BrowserRouter>
       <App />
-    </ServerRouter>
-  );
-  
-  return new Response(html, {
-    headers: { 'Content-Type': 'text/html' },
-  });
-}
+    </BrowserRouter>
+  </StrictMode>
+);
