@@ -4,7 +4,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-} from '@remix-run/react';
+} from 'react-router'; // ← Change this
 
 export default function App() {
   return (
