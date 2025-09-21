@@ -3,8 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "react-router dev --config react-router.config.ts",
-    "build": "react-router build --config react-router.config.ts",
+    "dev": "vite",
+    "build": "react-router build",
+    "preview": "vite preview",
     "typecheck": "react-router typegen && tsc --noEmit"
   },
   "dependencies": {
