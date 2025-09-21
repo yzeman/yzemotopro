@@ -2,10 +2,11 @@ import type { Config } from '@react-router/dev/config';
 
 export default {
   appDirectory: './src/app',
-  ssr: false, // ← EXPLICITLY disable server-side rendering
+  ssr: false, // ← MUST be false for SPA
   prerender: false,
-  // Add these for SPA mode:
+  // Explicit SPA settings:
   assetsBuildDirectory: 'dist/client',
-  browserBuildDirectory: 'dist/client',
+  browserBuildDirectory: 'dist/client', 
   publicPath: '/',
+  serverBuildFile: undefined, // ← Disable server build
 } satisfies Config;
